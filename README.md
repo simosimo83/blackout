@@ -114,13 +114,38 @@ Eventi inviati: `landing_view`, `play_cta_click`, `tutorial_start`,
 ## Deploy
 
 Compatibile con Vercel, Railway e simili: `npm run build` + `npm start`.
+`next start` ascolta sulla porta indicata da `PORT`, quindi non serve altra
+configurazione. Il file dei casi viene incluso nel deploy tramite
+`outputFileTracingIncludes` in `next.config.ts`.
 
-- Su **Vercel** il filesystem è in sola lettura: impostare `DATABASE_URL`
-  (Postgres) per salvare email ed eventi, altrimenti restano in memoria e vanno
-  persi al riavvio.
-- Su **Railway** o su una VM basta un volume montato su `BLACKOUT_DATA_DIR`.
-- Il file dei casi è incluso nel deploy tramite `outputFileTracingIncludes` in
-  `next.config.ts`.
+### Railway
+
+`railway.json` contiene già build, start e healthcheck. Dal dashboard basta
+creare un progetto da questo repository; da riga di comando:
+
+```bash
+npm i -g @railway/cli
+railway login                    # oppure export RAILWAY_API_TOKEN=...
+railway init --name blackout
+railway up                       # build e deploy della cartella corrente
+railway domain                   # assegna un dominio pubblico
+```
+
+Il filesystem di Railway è effimero: per non perdere email ed eventi a ogni
+deploy, scegliere una delle due strade.
+
+```bash
+# Postgres gestito (consigliato)
+railway add --database postgres
+railway variables --set 'DATABASE_URL=${{Postgres.DATABASE_URL}}'
+```
+
+oppure montare un volume sul percorso di `BLACKOUT_DATA_DIR` (default `.data/`).
+
+### Vercel
+
+Il filesystem è in sola lettura: impostare `DATABASE_URL` (Postgres) per salvare
+email ed eventi, altrimenti restano in memoria e vanno persi al riavvio.
 
 ## Traduzioni
 

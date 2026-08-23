@@ -50,7 +50,7 @@ export function objectName(id: number): string {
 }
 
 /** Progressi finti: i casi precedenti risultano completati. */
-export async function seedProgress(page: Page, completedUpTo: number): Promise<void> {
+export async function seedProgress(page: Page, completedUpTo: number, anonId = "e2e-anon"): Promise<void> {
   const cases: Record<string, unknown> = {};
   for (let id = 1; id <= completedUpTo; id++) {
     cases[String(id)] = {
@@ -70,7 +70,7 @@ export async function seedProgress(page: Page, completedUpTo: number): Promise<v
   }
   const progress = {
     version: 1,
-    anonId: "e2e-anon",
+    anonId,
     createdAt: 1,
     lastSessionAt: 1,
     sessions: 1,
@@ -122,6 +122,21 @@ export async function drawEdges(page: Page, edges: EdgeId[]): Promise<void> {
     }
     await page.mouse.click(point.x, point.y);
   }
+}
+
+/**
+ * Eventi analytics arrivati al server per un dato ID anonimo.
+ * Lo store su file è quello configurato in playwright.config.ts.
+ */
+export function storedEvents(anonId: string): { name: string; props: Record<string, unknown> }[] {
+  const file = path.join(process.cwd(), ".data", "e2e", "analytics.jsonl");
+  if (!fs.existsSync(file)) return [];
+  return fs
+    .readFileSync(file, "utf8")
+    .split("\n")
+    .filter(Boolean)
+    .map((line) => JSON.parse(line) as { name: string; anonId?: string; props: Record<string, unknown> })
+    .filter((row) => row.anonId === anonId);
 }
 
 /** Numero di bordi accesi attualmente disegnati. */

@@ -118,8 +118,11 @@ test("il risultato si può condividere senza spoiler", async ({ page, context, b
   await expect(page.getByRole("dialog")).toBeVisible();
 
   await page.getByRole("button", { name: /condividi il risultato/i }).click();
+  // la scrittura negli appunti è asincrona
+  await expect
+    .poll(() => page.evaluate(() => navigator.clipboard.readText()), { timeout: 10_000 })
+    .toContain("BLACKOUT #1");
   const clipboard = await page.evaluate(() => navigator.clipboard.readText());
-  expect(clipboard).toContain("BLACKOUT #1");
   expect(clipboard).toContain("Risolto in");
   expect(clipboard).not.toContain("Marco Valli");
   expect(clipboard).not.toContain("r0c0");
