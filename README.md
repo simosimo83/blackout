@@ -28,7 +28,12 @@ npm run dev          # http://localhost:3000
 | `npm run verify` | lint + typecheck + test |
 
 Se i browser di Playwright sono preinstallati fuori dalla cache di default:
-`CHROMIUM_PATH=/percorso/chrome npm run test:e2e`.
+`CHROMIUM_PATH=/percorso/chrome npm run test:e2e`. Per lanciare i test contro
+un'istanza già in esecuzione: `E2E_BASE_URL=https://... npm run test:e2e`
+(con `E2E_PROXY` se serve un proxy in uscita).
+
+Il progetto richiede **Node 20.9 o superiore** (vedi `engines` in
+`package.json` e `.nvmrc`).
 
 ## Struttura
 
@@ -120,8 +125,17 @@ configurazione. Il file dei casi viene incluso nel deploy tramite
 
 ### Railway
 
-`railway.json` contiene già build, start e healthcheck. Dal dashboard basta
-creare un progetto da questo repository; da riga di comando:
+**Istanza live:** https://blackout-web-production.up.railway.app
+(progetto `blackout`, servizio `blackout-web`, volume da 5 GB montato su `/data`
+con `BLACKOUT_DATA_DIR=/data`, così email ed eventi sopravvivono ai deploy).
+Il deploy è stato fatto caricando la cartella con `railway up`: per avere i
+deploy automatici a ogni push basta collegare il repository al servizio dal
+dashboard Railway.
+
+`railway.json` contiene già build, start e healthcheck (formato deprecato ma
+valido fino al 2026-12-01: `railway config migrate --apply` genera la versione
+`.railway/railway.ts`, da rivedere perché rinomina il servizio). Dal dashboard
+basta creare un progetto da questo repository; da riga di comando:
 
 ```bash
 npm i -g @railway/cli

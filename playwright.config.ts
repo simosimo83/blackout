@@ -1,7 +1,9 @@
 import { defineConfig, devices } from "@playwright/test";
 
 const PORT = Number(process.env.E2E_PORT ?? 3100);
-const baseURL = `http://127.0.0.1:${PORT}`;
+/** Con E2E_BASE_URL i test girano su un'istanza già in esecuzione (es. Railway). */
+const remote = process.env.E2E_BASE_URL;
+const baseURL = remote ?? `http://127.0.0.1:${PORT}`;
 
 export default defineConfig({
   testDir: "./e2e",
@@ -17,16 +19,20 @@ export default defineConfig({
     // In ambienti dove i browser di Playwright sono preinstallati fuori dalla
     // cache di default, indicare l'eseguibile con CHROMIUM_PATH.
     launchOptions: process.env.CHROMIUM_PATH ? { executablePath: process.env.CHROMIUM_PATH } : {},
+    // Utile quando i test girano su un'istanza remota dietro a un proxy.
+    proxy: process.env.E2E_PROXY ? { server: process.env.E2E_PROXY } : undefined,
   },
   projects: [
     { name: "mobile", use: { ...devices["Pixel 7"] } },
     { name: "desktop", use: { ...devices["Desktop Chrome"] } },
   ],
-  webServer: {
-    command: `npm run build && npm run start -- --port ${PORT}`,
-    url: baseURL,
-    reuseExistingServer: !process.env.CI,
-    timeout: 240_000,
-    env: { BLACKOUT_DATA_DIR: ".data/e2e" },
-  },
+  webServer: remote
+    ? undefined
+    : {
+        command: `npm run build && npm run start -- --port ${PORT}`,
+        url: baseURL,
+        reuseExistingServer: !process.env.CI,
+        timeout: 240_000,
+        env: { BLACKOUT_DATA_DIR: ".data/e2e" },
+      },
 });
