@@ -149,9 +149,24 @@ configurazione. Il file dei casi viene incluso nel deploy tramite
 **Istanza live:** https://blackout-web-production.up.railway.app
 (progetto `blackout`, servizio `blackout-web`, volume da 5 GB montato su `/data`
 con `BLACKOUT_DATA_DIR=/data`, così email ed eventi sopravvivono ai deploy).
-Il deploy è stato fatto caricando la cartella con `railway up`: per avere i
-deploy automatici a ogni push basta collegare il repository al servizio dal
-dashboard Railway.
+
+Il servizio è collegato a questo repository: **ogni push sul branch
+`claude/blackout-mvp-webapp-lazzhp` fa partire da solo build e deploy**, senza
+comandi da lanciare. Per cambiare branch (per esempio passando a `main` dopo il
+merge) basta il dashboard Railway, oppure:
+
+```bash
+railway service blackout-web
+railway link --project blackout
+# dal dashboard: Settings → Source → Branch
+```
+
+Resta possibile pubblicare a mano la cartella corrente, utile per provare
+qualcosa senza committare:
+
+```bash
+railway up --service blackout-web --detach
+```
 
 `railway.json` contiene già build, start e healthcheck (formato deprecato ma
 valido fino al 2026-12-01: `railway config migrate --apply` genera la versione
