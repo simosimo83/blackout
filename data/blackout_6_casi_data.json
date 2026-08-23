@@ -1,0 +1,1384 @@
+{
+  "title": "BLACKOUT - 6 casi prototipo",
+  "rules": {
+    "loop": "Un solo circuito chiuso sulle linee della griglia, senza incroci o ramificazioni.",
+    "clues": "Il numero in una stanza indica quanti dei suoi quattro lati appartengono al circuito.",
+    "reveal": "Le celle interne formano la zona buia; contengono esattamente un sospettato e un oggetto."
+  },
+  "coordinate_system": "zero-based [row, column], origin at top-left",
+  "cases": [
+    {
+      "id": 1,
+      "title": "La sala delle gemme",
+      "location": "Museo Bellombra",
+      "difficulty": 1,
+      "time": "3-5 min",
+      "story": "Durante l'anteprima notturna del Museo Bellombra, le luci saltano per 64 secondi. Quando tornano, una teca e' aperta. Ricostruisci la zona non coperta dalle telecamere.",
+      "rows": 5,
+      "cols": 5,
+      "clues": [
+        [
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          1,
+          0
+        ],
+        [
+          0,
+          2,
+          1
+        ],
+        [
+          0,
+          3,
+          0
+        ],
+        [
+          0,
+          4,
+          0
+        ],
+        [
+          1,
+          2,
+          3
+        ],
+        [
+          1,
+          4,
+          0
+        ],
+        [
+          2,
+          1,
+          2
+        ],
+        [
+          2,
+          2,
+          1
+        ],
+        [
+          2,
+          3,
+          2
+        ],
+        [
+          2,
+          4,
+          1
+        ],
+        [
+          3,
+          1,
+          3
+        ],
+        [
+          3,
+          2,
+          1
+        ],
+        [
+          3,
+          3,
+          2
+        ],
+        [
+          4,
+          1,
+          1
+        ],
+        [
+          4,
+          2,
+          1
+        ],
+        [
+          4,
+          4,
+          0
+        ]
+      ],
+      "region": [
+        [
+          1,
+          2
+        ],
+        [
+          2,
+          2
+        ],
+        [
+          2,
+          3
+        ],
+        [
+          3,
+          1
+        ],
+        [
+          3,
+          2
+        ],
+        [
+          3,
+          3
+        ]
+      ],
+      "suspects": [
+        [
+          "A",
+          "Livia Serra",
+          "curatrice"
+        ],
+        [
+          "B",
+          "Marco Valli",
+          "guardia"
+        ],
+        [
+          "C",
+          "Edoardo Neri",
+          "collezionista"
+        ],
+        [
+          "D",
+          "Nina Vale",
+          "creator"
+        ]
+      ],
+      "objects": [
+        [
+          "1",
+          "Diamante Blu"
+        ],
+        [
+          "2",
+          "Maschera d'Oro"
+        ],
+        [
+          "3",
+          "Chiave etrusca"
+        ],
+        [
+          "4",
+          "Miniatura reale"
+        ]
+      ],
+      "tokens": {
+        "suspects": {
+          "A": [
+            1,
+            0
+          ],
+          "B": [
+            3,
+            1
+          ],
+          "C": [
+            1,
+            3
+          ],
+          "D": [
+            4,
+            3
+          ]
+        },
+        "objects": {
+          "1": [
+            1,
+            2
+          ],
+          "2": [
+            3,
+            4
+          ],
+          "3": [
+            4,
+            0
+          ],
+          "4": [
+            2,
+            0
+          ]
+        }
+      },
+      "answer": {
+        "suspect": "B",
+        "object": "1"
+      },
+      "epilogue": "Marco aveva trasformato il test di sicurezza nel proprio alibi: il Diamante Blu era nascosto nella custodia della torcia."
+    },
+    {
+      "id": 2,
+      "title": "Mezzanotte all'Astra",
+      "location": "Grand Hotel Astra",
+      "difficulty": 2,
+      "time": "5-7 min",
+      "story": "Alle 00:17, durante il gala del Grand Hotel Astra, un blackout isola parte dell'ottavo piano. Una porta si apre e uno dei quattro oggetti sparisce.",
+      "rows": 5,
+      "cols": 5,
+      "clues": [
+        [
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          3,
+          1
+        ],
+        [
+          0,
+          4,
+          0
+        ],
+        [
+          1,
+          1,
+          3
+        ],
+        [
+          1,
+          3,
+          3
+        ],
+        [
+          2,
+          1,
+          1
+        ],
+        [
+          2,
+          2,
+          1
+        ],
+        [
+          3,
+          3,
+          2
+        ],
+        [
+          3,
+          4,
+          1
+        ],
+        [
+          4,
+          0,
+          0
+        ],
+        [
+          4,
+          1,
+          1
+        ],
+        [
+          4,
+          2,
+          1
+        ],
+        [
+          4,
+          3,
+          1
+        ],
+        [
+          4,
+          4,
+          0
+        ]
+      ],
+      "region": [
+        [
+          1,
+          1
+        ],
+        [
+          1,
+          3
+        ],
+        [
+          2,
+          1
+        ],
+        [
+          2,
+          2
+        ],
+        [
+          2,
+          3
+        ],
+        [
+          3,
+          1
+        ],
+        [
+          3,
+          2
+        ],
+        [
+          3,
+          3
+        ]
+      ],
+      "suspects": [
+        [
+          "A",
+          "Adele Moretti",
+          "concierge"
+        ],
+        [
+          "B",
+          "Raul Diaz",
+          "pianista"
+        ],
+        [
+          "C",
+          "Costanza Ferri",
+          "erede"
+        ],
+        [
+          "D",
+          "Leo Marin",
+          "fotografo"
+        ]
+      ],
+      "objects": [
+        [
+          "1",
+          "Collana Orione"
+        ],
+        [
+          "2",
+          "Orologio del Duca"
+        ],
+        [
+          "3",
+          "Passpartout"
+        ],
+        [
+          "4",
+          "Lettera cifrata"
+        ]
+      ],
+      "tokens": {
+        "suspects": {
+          "A": [
+            3,
+            1
+          ],
+          "B": [
+            0,
+            1
+          ],
+          "C": [
+            1,
+            4
+          ],
+          "D": [
+            3,
+            0
+          ]
+        },
+        "objects": {
+          "1": [
+            0,
+            2
+          ],
+          "2": [
+            2,
+            4
+          ],
+          "3": [
+            2,
+            3
+          ],
+          "4": [
+            4,
+            4
+          ]
+        }
+      },
+      "answer": {
+        "suspect": "A",
+        "object": "3"
+      },
+      "epilogue": "Adele aveva programmato il guasto dal banco reception e usato il passpartout per entrare nella suite sigillata."
+    },
+    {
+      "id": 3,
+      "title": "Il vagone 7",
+      "location": "Notte d'Oriente",
+      "difficulty": 3,
+      "time": "7-10 min",
+      "story": "Il treno Notte d'Oriente entra in galleria. Per 93 secondi il vagone 7 perde corrente e il sistema registra quattro persone in movimento.",
+      "rows": 6,
+      "cols": 6,
+      "clues": [
+        [
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          1,
+          0
+        ],
+        [
+          0,
+          4,
+          1
+        ],
+        [
+          0,
+          5,
+          0
+        ],
+        [
+          1,
+          2,
+          1
+        ],
+        [
+          1,
+          3,
+          2
+        ],
+        [
+          1,
+          5,
+          1
+        ],
+        [
+          2,
+          4,
+          1
+        ],
+        [
+          3,
+          1,
+          1
+        ],
+        [
+          3,
+          2,
+          2
+        ],
+        [
+          3,
+          3,
+          0
+        ],
+        [
+          3,
+          5,
+          1
+        ],
+        [
+          4,
+          3,
+          1
+        ],
+        [
+          5,
+          0,
+          0
+        ],
+        [
+          5,
+          2,
+          1
+        ],
+        [
+          5,
+          3,
+          1
+        ],
+        [
+          5,
+          5,
+          0
+        ]
+      ],
+      "region": [
+        [
+          1,
+          3
+        ],
+        [
+          1,
+          4
+        ],
+        [
+          2,
+          3
+        ],
+        [
+          2,
+          4
+        ],
+        [
+          3,
+          2
+        ],
+        [
+          3,
+          3
+        ],
+        [
+          3,
+          4
+        ],
+        [
+          4,
+          2
+        ],
+        [
+          4,
+          3
+        ],
+        [
+          4,
+          4
+        ]
+      ],
+      "suspects": [
+        [
+          "A",
+          "Sofia Arden",
+          "diplomatica"
+        ],
+        [
+          "B",
+          "Malik Noor",
+          "chef"
+        ],
+        [
+          "C",
+          "Otto Klein",
+          "illusionista"
+        ],
+        [
+          "D",
+          "Clara Weiss",
+          "capotreno"
+        ]
+      ],
+      "objects": [
+        [
+          "1",
+          "Rubino di Samarcanda"
+        ],
+        [
+          "2",
+          "Valigetta diplomatica"
+        ],
+        [
+          "3",
+          "Passaporto Nero"
+        ],
+        [
+          "4",
+          "Mappa del Caucaso"
+        ]
+      ],
+      "tokens": {
+        "suspects": {
+          "A": [
+            0,
+            2
+          ],
+          "B": [
+            2,
+            1
+          ],
+          "C": [
+            4,
+            2
+          ],
+          "D": [
+            5,
+            4
+          ]
+        },
+        "objects": {
+          "1": [
+            1,
+            4
+          ],
+          "2": [
+            1,
+            0
+          ],
+          "3": [
+            2,
+            5
+          ],
+          "4": [
+            5,
+            1
+          ]
+        }
+      },
+      "answer": {
+        "suspect": "C",
+        "object": "1"
+      },
+      "epilogue": "Otto aveva lasciato una registrazione di applausi nel vagone ristorante mentre attraversava la zona buia con il rubino."
+    },
+    {
+      "id": 4,
+      "title": "Il tavolo 17",
+      "location": "Casino Miraggio",
+      "difficulty": 3,
+      "time": "8-12 min",
+      "story": "Al Casino Miraggio il tavolo 17 si spegne mentre il caveau effettua un trasferimento. Il furto non riguarda necessariamente il denaro.",
+      "rows": 6,
+      "cols": 6,
+      "clues": [
+        [
+          0,
+          2,
+          1
+        ],
+        [
+          1,
+          0,
+          1
+        ],
+        [
+          1,
+          3,
+          1
+        ],
+        [
+          1,
+          5,
+          0
+        ],
+        [
+          2,
+          4,
+          3
+        ],
+        [
+          2,
+          5,
+          1
+        ],
+        [
+          3,
+          0,
+          0
+        ],
+        [
+          3,
+          1,
+          3
+        ],
+        [
+          3,
+          2,
+          1
+        ],
+        [
+          3,
+          4,
+          1
+        ],
+        [
+          4,
+          2,
+          1
+        ],
+        [
+          4,
+          3,
+          1
+        ],
+        [
+          5,
+          1,
+          1
+        ],
+        [
+          5,
+          5,
+          0
+        ]
+      ],
+      "region": [
+        [
+          1,
+          1
+        ],
+        [
+          1,
+          2
+        ],
+        [
+          2,
+          1
+        ],
+        [
+          2,
+          2
+        ],
+        [
+          2,
+          4
+        ],
+        [
+          3,
+          2
+        ],
+        [
+          3,
+          3
+        ],
+        [
+          3,
+          4
+        ],
+        [
+          4,
+          1
+        ],
+        [
+          4,
+          2
+        ],
+        [
+          4,
+          3
+        ],
+        [
+          4,
+          4
+        ]
+      ],
+      "suspects": [
+        [
+          "A",
+          "Iris Conti",
+          "matematica"
+        ],
+        [
+          "B",
+          "Victor Bell",
+          "attore"
+        ],
+        [
+          "C",
+          "Enzo Riva",
+          "tecnico"
+        ],
+        [
+          "D",
+          "Mara Sol",
+          "croupier"
+        ]
+      ],
+      "objects": [
+        [
+          "1",
+          "Jeton Nero"
+        ],
+        [
+          "2",
+          "Chiave Master"
+        ],
+        [
+          "3",
+          "Hard disk"
+        ],
+        [
+          "4",
+          "Collana Vega"
+        ]
+      ],
+      "tokens": {
+        "suspects": {
+          "A": [
+            0,
+            0
+          ],
+          "B": [
+            1,
+            4
+          ],
+          "C": [
+            3,
+            3
+          ],
+          "D": [
+            5,
+            4
+          ]
+        },
+        "objects": {
+          "1": [
+            0,
+            3
+          ],
+          "2": [
+            3,
+            5
+          ],
+          "3": [
+            1,
+            2
+          ],
+          "4": [
+            5,
+            0
+          ]
+        }
+      },
+      "answer": {
+        "suspect": "C",
+        "object": "3"
+      },
+      "epilogue": "Enzo non cercava le fiches: il vero bottino era il disco con l'algoritmo che regolava i tavoli del casino."
+    },
+    {
+      "id": 5,
+      "title": "L'ultimo brindisi",
+      "location": "Yacht Nocturne",
+      "difficulty": 4,
+      "time": "10-15 min",
+      "story": "A bordo dello yacht Nocturne, un brindisi viene interrotto da un guasto. Le telecamere esterne restano attive, quelle interne no.",
+      "rows": 7,
+      "cols": 7,
+      "clues": [
+        [
+          0,
+          5,
+          0
+        ],
+        [
+          1,
+          2,
+          0
+        ],
+        [
+          1,
+          3,
+          1
+        ],
+        [
+          1,
+          4,
+          1
+        ],
+        [
+          2,
+          1,
+          3
+        ],
+        [
+          2,
+          6,
+          0
+        ],
+        [
+          3,
+          0,
+          1
+        ],
+        [
+          3,
+          4,
+          0
+        ],
+        [
+          3,
+          5,
+          2
+        ],
+        [
+          4,
+          0,
+          1
+        ],
+        [
+          4,
+          1,
+          1
+        ],
+        [
+          4,
+          2,
+          0
+        ],
+        [
+          4,
+          5,
+          2
+        ],
+        [
+          5,
+          3,
+          2
+        ],
+        [
+          6,
+          2,
+          1
+        ],
+        [
+          6,
+          3,
+          0
+        ]
+      ],
+      "region": [
+        [
+          2,
+          1
+        ],
+        [
+          2,
+          3
+        ],
+        [
+          2,
+          4
+        ],
+        [
+          3,
+          1
+        ],
+        [
+          3,
+          2
+        ],
+        [
+          3,
+          3
+        ],
+        [
+          3,
+          4
+        ],
+        [
+          3,
+          5
+        ],
+        [
+          4,
+          1
+        ],
+        [
+          4,
+          2
+        ],
+        [
+          4,
+          3
+        ],
+        [
+          4,
+          4
+        ],
+        [
+          4,
+          5
+        ],
+        [
+          5,
+          1
+        ],
+        [
+          5,
+          2
+        ]
+      ],
+      "suspects": [
+        [
+          "A",
+          "Ines Vale",
+          "capitana"
+        ],
+        [
+          "B",
+          "Elia Morel",
+          "gallerista"
+        ],
+        [
+          "C",
+          "Noa Bellini",
+          "sommelier"
+        ],
+        [
+          "D",
+          "Alma Rios",
+          "erede"
+        ]
+      ],
+      "objects": [
+        [
+          "1",
+          "Smeraldo Marino"
+        ],
+        [
+          "2",
+          "Statuetta Fenice"
+        ],
+        [
+          "3",
+          "Contratto Helios"
+        ],
+        [
+          "4",
+          "Microfilm"
+        ]
+      ],
+      "tokens": {
+        "suspects": {
+          "A": [
+            0,
+            0
+          ],
+          "B": [
+            5,
+            1
+          ],
+          "C": [
+            1,
+            5
+          ],
+          "D": [
+            6,
+            6
+          ]
+        },
+        "objects": {
+          "1": [
+            2,
+            0
+          ],
+          "2": [
+            5,
+            5
+          ],
+          "3": [
+            6,
+            1
+          ],
+          "4": [
+            2,
+            4
+          ]
+        }
+      },
+      "answer": {
+        "suspect": "B",
+        "object": "4"
+      },
+      "epilogue": "Elia fece sparire il microfilm dentro la cornice di una stampa nautica, lasciando intatti i gioielli come diversivo."
+    },
+    {
+      "id": 6,
+      "title": "L'asta impossibile",
+      "location": "Casa d'Aste Meridian",
+      "difficulty": 5,
+      "time": "15-20 min",
+      "story": "Alla Casa d'Aste Meridian, un blackout di 47 secondi coincide con la chiusura del lotto finale. Nessuna porta risulta forzata: il circuito deve rivelare l'unica traiettoria possibile.",
+      "rows": 7,
+      "cols": 7,
+      "clues": [
+        [
+          0,
+          4,
+          1
+        ],
+        [
+          0,
+          6,
+          0
+        ],
+        [
+          1,
+          2,
+          2
+        ],
+        [
+          1,
+          4,
+          1
+        ],
+        [
+          2,
+          1,
+          2
+        ],
+        [
+          2,
+          2,
+          0
+        ],
+        [
+          2,
+          4,
+          0
+        ],
+        [
+          2,
+          6,
+          1
+        ],
+        [
+          3,
+          0,
+          1
+        ],
+        [
+          3,
+          1,
+          1
+        ],
+        [
+          4,
+          1,
+          2
+        ],
+        [
+          4,
+          5,
+          0
+        ],
+        [
+          5,
+          3,
+          2
+        ],
+        [
+          5,
+          4,
+          1
+        ],
+        [
+          6,
+          1,
+          0
+        ],
+        [
+          6,
+          4,
+          0
+        ]
+      ],
+      "region": [
+        [
+          1,
+          2
+        ],
+        [
+          1,
+          3
+        ],
+        [
+          1,
+          4
+        ],
+        [
+          1,
+          5
+        ],
+        [
+          2,
+          1
+        ],
+        [
+          2,
+          2
+        ],
+        [
+          2,
+          3
+        ],
+        [
+          2,
+          4
+        ],
+        [
+          2,
+          5
+        ],
+        [
+          3,
+          1
+        ],
+        [
+          3,
+          2
+        ],
+        [
+          3,
+          3
+        ],
+        [
+          3,
+          4
+        ],
+        [
+          4,
+          1
+        ],
+        [
+          4,
+          2
+        ],
+        [
+          4,
+          3
+        ],
+        [
+          5,
+          2
+        ],
+        [
+          5,
+          3
+        ]
+      ],
+      "suspects": [
+        [
+          "A",
+          "Luca Ferri",
+          "banditore"
+        ],
+        [
+          "B",
+          "Bianca Voss",
+          "perita"
+        ],
+        [
+          "C",
+          "Gabriel Rey",
+          "magnate"
+        ],
+        [
+          "D",
+          "Vera Lin",
+          "assicuratrice"
+        ]
+      ],
+      "objects": [
+        [
+          "1",
+          "Corona d'Ambra"
+        ],
+        [
+          "2",
+          "Registro Nero"
+        ],
+        [
+          "3",
+          "Trittico d'Inverno"
+        ],
+        [
+          "4",
+          "Sigillo Imperiale"
+        ]
+      ],
+      "tokens": {
+        "suspects": {
+          "A": [
+            0,
+            0
+          ],
+          "B": [
+            1,
+            1
+          ],
+          "C": [
+            6,
+            5
+          ],
+          "D": [
+            3,
+            4
+          ]
+        },
+        "objects": {
+          "1": [
+            2,
+            0
+          ],
+          "2": [
+            1,
+            5
+          ],
+          "3": [
+            4,
+            4
+          ],
+          "4": [
+            6,
+            2
+          ]
+        }
+      },
+      "answer": {
+        "suspect": "D",
+        "object": "2"
+      },
+      "epilogue": "Vera non voleva il lotto principale: cercava il Registro Nero, la prova delle aste truccate che avrebbe fatto crollare Meridian."
+    }
+  ],
+  "verification": [
+    {
+      "case": 1,
+      "unique_solution": true,
+      "loop_edges": 12,
+      "inside_cells": 6,
+      "clue_count": 17
+    },
+    {
+      "case": 2,
+      "unique_solution": true,
+      "loop_edges": 14,
+      "inside_cells": 8,
+      "clue_count": 14
+    },
+    {
+      "case": 3,
+      "unique_solution": true,
+      "loop_edges": 14,
+      "inside_cells": 10,
+      "clue_count": 17
+    },
+    {
+      "case": 4,
+      "unique_solution": true,
+      "loop_edges": 20,
+      "inside_cells": 12,
+      "clue_count": 14
+    },
+    {
+      "case": 5,
+      "unique_solution": true,
+      "loop_edges": 20,
+      "inside_cells": 15,
+      "clue_count": 16
+    },
+    {
+      "case": 6,
+      "unique_solution": true,
+      "loop_edges": 20,
+      "inside_cells": 18,
+      "clue_count": 16
+    }
+  ],
+  "data_notes": "Rispetto al file originale del prototipo e' stato aggiunto l'indizio [3,1,1] al caso 6: senza di esso il caso ammetteva due soluzioni valide. Il test tests/cases.test.ts verifica l'unicita' della soluzione di tutti e sei i casi."
+}
