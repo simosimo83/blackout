@@ -10,6 +10,7 @@ import {
   type Cell,
   type Clue,
   type EdgeId,
+  type EdgeKind,
   type EdgeRef,
   type Grid,
 } from "@/lib/slitherlink";
@@ -40,10 +41,23 @@ export interface GridBoardProps {
   onSetEdge?: (id: EdgeId, value: EdgeValue) => void;
 }
 
+/** Orientamento di un bordo dal suo id canonico. */
+function parseKind(id: EdgeId): EdgeKind {
+  return id.endsWith("-top") || id.endsWith("-bottom") ? "h" : "v";
+}
+
 const CELL = 100;
 const PAD = 46;
 /** Distanza massima (in frazioni di cella) per agganciare un bordo. */
 const HIT = 0.34;
+/** Semilarghezza minima dell'area sensibile, in pixel reali: conta su schermi piccoli. */
+const MIN_HIT_PX = 15;
+/**
+ * Vicino a un vertice i due bordi perpendicolari sono quasi equidistanti:
+ * entro questo margine si resta sull'orientamento del tratto in corso, così
+ * trascinando lungo un muro non si accendono i bordi trasversali.
+ */
+const KEEP_DIRECTION = 0.16;
 
 export default function GridBoard({
   rows,
@@ -66,8 +80,15 @@ export default function GridBoard({
   const grid: Grid = useMemo(() => ({ rows, cols }), [rows, cols]);
   const svgRef = useRef<SVGSVGElement | null>(null);
   const scrollRef = useRef<HTMLDivElement | null>(null);
-  const stroke = useRef<{ value: EdgeValue; applied: Set<EdgeId> } | null>(null);
-  const pan = useRef<{ x: number; y: number; left: number; top: number } | null>(null);
+  const stroke = useRef<{ value: EdgeValue; applied: Set<EdgeId>; kind: EdgeKind | null } | null>(null);
+  const pan = useRef<{
+    x: number;
+    y: number;
+    left: number;
+    top: number;
+    pageX: number;
+    pageY: number;
+  } | null>(null);
 
   const width = cols * CELL + PAD * 2;
   const height = rows * CELL + PAD * 2;
@@ -86,26 +107,37 @@ export default function GridBoard({
   );
   const objectByCell = useMemo(() => new Map(objects.map((o) => [cellKey(o.cell), o])), [objects]);
 
-  /** Punto del puntatore in coordinate della griglia (unità = cella). */
-  const gridPoint = useCallback((event: React.PointerEvent): { u: number; v: number } | null => {
-    const svg = svgRef.current;
-    if (!svg) return null;
-    const ctm = svg.getScreenCTM();
-    if (!ctm) return null;
-    const point = svg.createSVGPoint();
-    point.x = event.clientX;
-    point.y = event.clientY;
-    const local = point.matrixTransform(ctm.inverse());
-    return { u: (local.x - PAD) / CELL, v: (local.y - PAD) / CELL };
-  }, []);
+  /**
+   * Punto del puntatore in coordinate della griglia (unità = cella) più la
+   * dimensione in pixel reali di una cella, che serve a tarare l'area sensibile.
+   */
+  const gridPoint = useCallback(
+    (event: React.PointerEvent): { u: number; v: number; cellPx: number } | null => {
+      const svg = svgRef.current;
+      if (!svg) return null;
+      const ctm = svg.getScreenCTM();
+      if (!ctm) return null;
+      const point = svg.createSVGPoint();
+      point.x = event.clientX;
+      point.y = event.clientY;
+      const local = point.matrixTransform(ctm.inverse());
+      return { u: (local.x - PAD) / CELL, v: (local.y - PAD) / CELL, cellPx: Math.abs(ctm.a) * CELL };
+    },
+    [],
+  );
 
-  /** Bordo più vicino al puntatore, se dentro l'area sensibile. */
+  /**
+   * Bordo più vicino al puntatore, se dentro l'area sensibile.
+   * `prefer` mantiene l'orientamento durante un trascinamento.
+   */
   const edgeAt = useCallback(
-    (event: React.PointerEvent): EdgeId | null => {
+    (event: React.PointerEvent, prefer: EdgeKind | null = null): EdgeId | null => {
       const p = gridPoint(event);
       if (!p) return null;
-      const { u, v } = p;
+      const { u, v, cellPx } = p;
       if (u < -0.4 || v < -0.4 || u > cols + 0.4 || v > rows + 0.4) return null;
+      // su celle piccole la fascia sensibile non scende sotto MIN_HIT_PX
+      const hit = cellPx > 0 ? Math.min(0.45, Math.max(HIT, MIN_HIT_PX / cellPx)) : HIT;
 
       const hRow = Math.min(Math.max(Math.round(v), 0), rows);
       const hCol = Math.min(Math.max(Math.floor(u), 0), cols - 1);
@@ -115,13 +147,14 @@ export default function GridBoard({
       const vRow = Math.min(Math.max(Math.floor(v), 0), rows - 1);
       const vDist = Math.abs(u - vCol);
 
-      const best: EdgeRef | null =
-        Math.min(hDist, vDist) > HIT
-          ? null
-          : hDist <= vDist
-            ? { kind: "h", row: hRow, col: hCol }
-            : { kind: "v", row: vRow, col: vCol };
-      return best ? edgeId(best, grid) : null;
+      if (Math.min(hDist, vDist) > hit) return null;
+
+      let kind: EdgeKind = hDist <= vDist ? "h" : "v";
+      if (prefer && prefer !== kind && Math.abs(hDist - vDist) < KEEP_DIRECTION) kind = prefer;
+
+      const best: EdgeRef =
+        kind === "h" ? { kind: "h", row: hRow, col: hCol } : { kind: "v", row: vRow, col: vCol };
+      return edgeId(best, grid);
     },
     [cols, grid, gridPoint, rows],
   );
@@ -148,15 +181,18 @@ export default function GridBoard({
     if (disabled || event.button === 2) return;
     const id = edgeAt(event);
     if (!id) {
-      // Zone morte al centro delle stanze: servono per spostare la planimetria
-      // quando è ingrandita.
+      // Il centro delle stanze è zona morta: al tocco serve a spostare la
+      // planimetria ingrandita e, quando non c'è nulla da spostare, a scorrere
+      // la pagina (il disegno richiede touch-action: none).
       const container = scrollRef.current;
-      if (container && (container.scrollWidth > container.clientWidth || container.scrollHeight > container.clientHeight)) {
+      if (container && event.pointerType !== "mouse") {
         pan.current = {
           x: event.clientX,
           y: event.clientY,
           left: container.scrollLeft,
           top: container.scrollTop,
+          pageX: window.scrollX,
+          pageY: window.scrollY,
         };
         event.currentTarget.setPointerCapture(event.pointerId);
       }
@@ -164,7 +200,7 @@ export default function GridBoard({
     }
     event.currentTarget.setPointerCapture(event.pointerId);
     const value = nextValue(id);
-    stroke.current = { value, applied: new Set([id]) };
+    stroke.current = { value, applied: new Set([id]), kind: parseKind(id) };
     onStrokeStart?.();
     onSetEdge?.(id, value);
     haptic();
@@ -174,16 +210,25 @@ export default function GridBoard({
     if (pan.current) {
       const container = scrollRef.current;
       if (container) {
-        container.scrollLeft = pan.current.left - (event.clientX - pan.current.x);
-        container.scrollTop = pan.current.top - (event.clientY - pan.current.y);
+        const wantLeft = pan.current.left - (event.clientX - pan.current.x);
+        const wantTop = pan.current.top - (event.clientY - pan.current.y);
+        const maxLeft = container.scrollWidth - container.clientWidth;
+        const maxTop = container.scrollHeight - container.clientHeight;
+        const left = Math.min(Math.max(wantLeft, 0), Math.max(maxLeft, 0));
+        const top = Math.min(Math.max(wantTop, 0), Math.max(maxTop, 0));
+        container.scrollLeft = left;
+        container.scrollTop = top;
+        // ciò che la planimetria non assorbe scorre la pagina
+        window.scrollTo(pan.current.pageX + (wantLeft - left), pan.current.pageY + (wantTop - top));
       }
       return;
     }
     const current = stroke.current;
     if (!current || disabled) return;
-    const id = edgeAt(event);
+    const id = edgeAt(event, current.kind);
     if (!id || current.applied.has(id)) return;
     current.applied.add(id);
+    current.kind = parseKind(id);
     onSetEdge?.(id, current.value);
     haptic();
   };

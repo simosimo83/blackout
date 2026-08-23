@@ -19,7 +19,7 @@ import type { Cell, EdgeId } from "@/lib/slitherlink";
 import type { CaseReveal, CheckResult, Hint, PlayableCase } from "@/lib/types";
 import GridBoard, { type BoardMode, type EdgeValue } from "./GridBoard";
 import ResultPanel from "./ResultPanel";
-import Toolbar from "./Toolbar";
+import { ModeSwitch, ToolButtons } from "./Toolbar";
 
 interface BoardState {
   lines: EdgeId[];
@@ -336,25 +336,13 @@ export default function GameSession({ playable, start }: GameSessionProps) {
 
   return (
     <>
-      <div className="game-timer">
-        <span className="timer-label">{t.game.timer}</span>
-        <span className="timer-value">{formatDuration(elapsedMs)}</span>
+      <div className="game-bar">
+        <ModeSwitch mode={mode} onMode={setMode} disabled={solved} />
+        <p className="game-timer">
+          <span className="timer-label">{t.game.timer}</span>
+          <span className="timer-value">{formatDuration(elapsedMs)}</span>
+        </p>
       </div>
-
-      <Toolbar
-        mode={mode}
-        onMode={setMode}
-        onUndo={undo}
-        onRedo={redo}
-        onReset={reset}
-        onZoomIn={() => setZoomIndex((i) => Math.min(i + 1, ZOOM_STEPS.length - 1))}
-        onZoomOut={() => setZoomIndex((i) => Math.max(i - 1, 0))}
-        canUndo={past.length > 0}
-        canRedo={future.length > 0}
-        canZoomIn={zoomIndex < ZOOM_STEPS.length - 1}
-        canZoomOut={zoomIndex > 0}
-        disabled={solved}
-      />
 
       <GridBoard
         rows={playable.rows}
@@ -373,6 +361,23 @@ export default function GameSession({ playable, start }: GameSessionProps) {
         onStrokeStart={pushHistory}
         onSetEdge={handleSetEdge}
       />
+
+      <div className="game-under-board">
+        <ToolButtons
+          onUndo={undo}
+          onRedo={redo}
+          onReset={reset}
+          onZoomIn={() => setZoomIndex((i) => Math.min(i + 1, ZOOM_STEPS.length - 1))}
+          onZoomOut={() => setZoomIndex((i) => Math.max(i - 1, 0))}
+          canUndo={past.length > 0}
+          canRedo={future.length > 0}
+          canZoomIn={zoomIndex < ZOOM_STEPS.length - 1}
+          canZoomOut={zoomIndex > 0}
+          disabled={solved}
+        />
+      </div>
+
+      <p className="touch-hint">{t.game.touchHint}</p>
 
       <div className="game-status" role="status" aria-live="polite">
         {errorMessage && <p className="status-error">{errorMessage}</p>}
@@ -397,11 +402,31 @@ export default function GameSession({ playable, start }: GameSessionProps) {
           </button>
         ) : (
           <>
-            <button type="button" className="btn btn-solid btn-wide" onClick={check} disabled={checking}>
-              {checking ? t.game.checking : t.game.check}
+            {/* L'etichetta accorciata su telefono non cambia il nome accessibile. */}
+            <button
+              type="button"
+              className="btn btn-solid btn-wide"
+              onClick={check}
+              disabled={checking}
+              aria-label={t.game.check}
+            >
+              <span className="label-long">{checking ? t.game.checking : t.game.check}</span>
+              <span className="label-short">{checking ? t.game.checking : t.game.checkShort}</span>
             </button>
-            <button type="button" className="btn btn-ghost" onClick={askHint} disabled={hintsUsed >= 3}>
-              {hintsUsed >= 3 ? t.game.hintsExhausted : `${t.game.hint} (${hintsUsed + 1}/3)`}
+            <button
+              type="button"
+              className="btn btn-ghost btn-hint"
+              onClick={askHint}
+              disabled={hintsUsed >= 3}
+              aria-label={hintsUsed >= 3 ? t.game.hintsExhausted : `${t.game.hint} (${hintsUsed + 1}/3)`}
+            >
+              <span className="hint-glyph" aria-hidden="true">
+                ?
+              </span>
+              <span className="label-long">
+                {hintsUsed >= 3 ? t.game.hintsExhausted : `${t.game.hint} (${hintsUsed + 1}/3)`}
+              </span>
+              <span className="label-short">{hintsUsed >= 3 ? t.game.hintsDone : `${hintsUsed + 1}/3`}</span>
             </button>
           </>
         )}

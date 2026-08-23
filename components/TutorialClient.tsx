@@ -9,7 +9,7 @@ import { loadProgress, saveProgress } from "@/lib/progress";
 import { analyze, cellEdgeIds, interiorCells, type EdgeId } from "@/lib/slitherlink";
 import { TUTORIAL_CLUES, TUTORIAL_GRID, TUTORIAL_THREE_CELL } from "@/lib/tutorial";
 import GridBoard, { type BoardMode, type EdgeValue } from "./GridBoard";
-import Toolbar from "./Toolbar";
+import { ModeSwitch, ToolButtons } from "./Toolbar";
 
 interface BoardState {
   lines: EdgeId[];
@@ -91,9 +91,24 @@ export default function TutorialClient() {
         </p>
       </header>
 
-      <Toolbar
+      <div className="game-bar">
+        <ModeSwitch mode={mode} onMode={setMode} />
+      </div>
+
+      <GridBoard
+        rows={TUTORIAL_GRID.rows}
+        cols={TUTORIAL_GRID.cols}
+        clues={TUTORIAL_CLUES}
+        lines={lines}
+        excluded={excluded}
         mode={mode}
-        onMode={setMode}
+        zoom={zoom}
+        darkRegion={solution.isValid ? interiorCells(TUTORIAL_GRID, lines) : null}
+        onStrokeStart={pushHistory}
+        onSetEdge={(id, value) => setBoard((state) => applyEdge(state, id, value))}
+      />
+
+      <ToolButtons
         onUndo={() => {
           if (past.length === 0) return;
           setBoard(past[past.length - 1]);
@@ -116,19 +131,6 @@ export default function TutorialClient() {
         canRedo={future.length > 0}
         canZoomIn={zoom < 2}
         canZoomOut={zoom > 1}
-      />
-
-      <GridBoard
-        rows={TUTORIAL_GRID.rows}
-        cols={TUTORIAL_GRID.cols}
-        clues={TUTORIAL_CLUES}
-        lines={lines}
-        excluded={excluded}
-        mode={mode}
-        zoom={zoom}
-        darkRegion={solution.isValid ? interiorCells(TUTORIAL_GRID, lines) : null}
-        onStrokeStart={pushHistory}
-        onSetEdge={(id, value) => setBoard((state) => applyEdge(state, id, value))}
       />
 
       {solution.isValid && (

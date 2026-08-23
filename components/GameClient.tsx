@@ -8,7 +8,7 @@ import type { PlayableCase } from "@/lib/types";
 import { useProgress } from "@/lib/useProgress";
 import GameSession, { type SessionStart } from "./GameSession";
 import GridBoard from "./GridBoard";
-import Toolbar from "./Toolbar";
+import { ModeSwitch, ToolButtons } from "./Toolbar";
 
 export interface GameClientProps {
   playable: PlayableCase;
@@ -68,24 +68,13 @@ export default function GameClient({ playable }: GameClientProps) {
 function BoardPlaceholder({ playable }: GameClientProps) {
   return (
     <>
-      <div className="game-timer">
-        <span className="timer-label">{t.game.timer}</span>
-        <span className="timer-value">{formatDuration(0)}</span>
+      <div className="game-bar">
+        <ModeSwitch mode="line" onMode={() => {}} disabled />
+        <p className="game-timer">
+          <span className="timer-label">{t.game.timer}</span>
+          <span className="timer-value">{formatDuration(0)}</span>
+        </p>
       </div>
-      <Toolbar
-        mode="line"
-        onMode={() => {}}
-        onUndo={() => {}}
-        onRedo={() => {}}
-        onReset={() => {}}
-        onZoomIn={() => {}}
-        onZoomOut={() => {}}
-        canUndo={false}
-        canRedo={false}
-        canZoomIn={false}
-        canZoomOut={false}
-        disabled
-      />
       <GridBoard
         rows={playable.rows}
         cols={playable.cols}
@@ -97,6 +86,21 @@ function BoardPlaceholder({ playable }: GameClientProps) {
         objects={playable.objects}
         disabled
       />
+      <div className="game-under-board">
+        <ToolButtons
+          onUndo={() => {}}
+          onRedo={() => {}}
+          onReset={() => {}}
+          onZoomIn={() => {}}
+          onZoomOut={() => {}}
+          canUndo={false}
+          canRedo={false}
+          canZoomIn={false}
+          canZoomOut={false}
+          disabled
+        />
+      </div>
+      <p className="touch-hint">{t.game.touchHint}</p>
     </>
   );
 }

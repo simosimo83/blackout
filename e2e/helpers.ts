@@ -109,14 +109,30 @@ export async function edgePoint(page: Page, edge: EdgeId): Promise<{ x: number; 
   };
 }
 
+/** Punto (in pixel di pagina) al centro di una stanza: è la zona morta. */
+export async function cellCenter(page: Page, row: number, col: number): Promise<{ x: number; y: number }> {
+  const svg = page.locator(".board-svg");
+  const box = await svg.boundingBox();
+  if (!box) throw new Error("planimetria non visibile");
+  const [, , width, height] = (await svg.getAttribute("viewBox"))!.split(" ").map(Number);
+  const scale = Math.min(box.width / width, box.height / height);
+  const offsetX = (box.width - width * scale) / 2;
+  const offsetY = (box.height - height * scale) / 2;
+  return {
+    x: box.x + offsetX + (PAD + col * CELL + CELL / 2) * scale,
+    y: box.y + offsetY + (PAD + row * CELL + CELL / 2) * scale,
+  };
+}
+
 /** Traccia i bordi indicati toccandoli uno a uno, scorrendo se serve. */
 export async function drawEdges(page: Page, edges: EdgeId[]): Promise<void> {
   const viewport = page.viewportSize();
   const height = viewport?.height ?? 720;
   for (const edge of edges) {
     let point = await edgePoint(page, edge);
-    // la toolbar è sticky in alto: si tiene il bersaglio lontano dai bordi
-    if (point.y < 150 || point.y > height - 60) {
+    // in alto c'è la barra delle modalità, in basso quella delle azioni:
+    // il bersaglio va tenuto lontano da entrambe
+    if (point.y < 150 || point.y > height - 140) {
       await page.evaluate((dy) => window.scrollBy(0, dy), Math.round(point.y - height / 2));
       point = await edgePoint(page, edge);
     }

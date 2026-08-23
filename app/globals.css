@@ -32,6 +32,7 @@
 
 html {
   background: var(--noir);
+  -webkit-text-size-adjust: 100%;
 }
 
 body {
@@ -624,48 +625,70 @@ a {
 
 .game {
   display: grid;
-  gap: 16px;
+  gap: 14px;
 }
 
 .game-header {
+  display: grid;
+  gap: 4px;
+}
+
+.game-kicker {
   display: flex;
-  align-items: flex-end;
-  justify-content: space-between;
-  gap: 14px;
+  align-items: baseline;
+  gap: 10px;
   flex-wrap: wrap;
+  font-size: 0.68rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--gold);
 }
 
 .game-back {
-  font-size: 0.74rem;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
   color: var(--ivory-dim);
+  white-space: nowrap;
 }
 
 .game-back:hover {
   color: var(--gold);
 }
 
-.game-kicker {
-  margin-top: 8px;
-  font-size: 0.72rem;
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
-  color: var(--gold);
+.game-title {
+  font-size: clamp(1.5rem, 6vw, 2.4rem);
 }
 
-.game-title {
-  font-size: clamp(1.7rem, 6vw, 2.4rem);
+.game-story {
+  position: relative;
+  color: var(--ivory-dim);
+  font-size: 0.94rem;
+  max-width: 68ch;
+}
+
+.story-toggle {
+  display: none;
+}
+
+/* Barra sopra la planimetria: modalità di disegno e tempo, sempre in vista. */
+.game-bar {
+  position: sticky;
+  top: 0;
+  z-index: 6;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 8px 0;
+  background: linear-gradient(180deg, var(--noir) 72%, transparent);
 }
 
 .game-timer {
-  display: grid;
-  justify-items: end;
-  gap: 2px;
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
 }
 
 .timer-label {
-  font-size: 0.66rem;
+  font-size: 0.62rem;
   letter-spacing: 0.2em;
   text-transform: uppercase;
   color: var(--muted);
@@ -673,31 +696,26 @@ a {
 
 .timer-value {
   font-family: var(--font-display-stack);
-  font-size: 1.9rem;
+  font-size: 1.7rem;
+  line-height: 1;
   font-variant-numeric: tabular-nums;
   color: var(--ivory);
 }
 
-.game-story {
-  color: var(--ivory-dim);
-  font-size: 0.96rem;
-  max-width: 68ch;
+.game-under-board {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.touch-hint {
+  font-size: 0.72rem;
+  color: var(--muted);
 }
 
 /* -------------------------------- toolbar -------------------------------- */
-
-.toolbar {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-  justify-content: space-between;
-  align-items: center;
-  position: sticky;
-  top: 0;
-  z-index: 5;
-  padding: 8px 0;
-  background: linear-gradient(180deg, var(--noir) 70%, transparent);
-}
 
 .toolbar-modes {
   display: inline-flex;
@@ -745,12 +763,20 @@ a {
 .toolbar-actions {
   display: inline-flex;
   gap: 6px;
+  align-items: center;
   flex-wrap: wrap;
+}
+
+.tool-sep {
+  width: 1px;
+  height: 26px;
+  background: var(--line);
+  margin: 0 2px;
 }
 
 .tool-btn {
   min-width: 46px;
-  min-height: 42px;
+  min-height: 44px;
   padding: 0 10px;
   border: 1px solid var(--line);
   border-radius: 10px;
@@ -761,6 +787,7 @@ a {
   cursor: pointer;
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   gap: 6px;
 }
 
@@ -780,8 +807,8 @@ a {
   text-transform: uppercase;
 }
 
-@media (max-width: 560px) {
-  .tool-label:not(.sr-only) {
+@media (max-width: 640px) {
+  .tool-label {
     display: none;
   }
 }
@@ -790,6 +817,7 @@ a {
 
 .board {
   border: 1px solid var(--line);
+  touch-action: none;
   border-radius: var(--radius);
   background: radial-gradient(120% 120% at 50% 0%, rgba(240, 182, 76, 0.05), transparent 60%), #0c0e14;
   overflow: auto;
@@ -797,11 +825,16 @@ a {
   box-shadow: var(--shadow);
 }
 
+.board[data-zoomed="true"] {
+  max-height: min(74dvh, 720px);
+}
+
 .board-svg {
   display: block;
   touch-action: none;
   user-select: none;
   min-width: 100%;
+  -webkit-user-select: none;
 }
 
 .board-plate {
@@ -962,6 +995,15 @@ a {
   display: flex;
   flex-wrap: wrap;
   gap: 10px;
+}
+
+.label-short,
+.hint-glyph {
+  display: none;
+}
+
+.btn-hint {
+  white-space: nowrap;
 }
 
 .solved-banner {
@@ -1213,6 +1255,13 @@ a {
   gap: 10px;
   margin: 0;
   text-align: center;
+  align-items: end;
+}
+
+.result-stats > div {
+  display: grid;
+  grid-template-rows: 1fr auto;
+  align-items: end;
 }
 
 .result-stats dt {
@@ -1360,6 +1409,15 @@ a {
   justify-self: center;
 }
 
+/* Sotto i 430 px di altezza non c'è spazio per la parte narrativa: resta il
+   titolo del caso, la storia si legge ruotando il telefono. */
+@media (max-height: 430px) and (orientation: landscape) {
+  .game-story,
+  .game-kicker-text {
+    display: none;
+  }
+}
+
 /* ------------------------------- responsive ------------------------------- */
 
 @media (min-width: 700px) {
@@ -1385,6 +1443,241 @@ a {
 
   .step-list {
     grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+
+/* ------------------------------ telefono --------------------------------- */
+/* Obiettivo: planimetria e comandi in una sola schermata, azioni sotto il   */
+/* pollice, niente contenuto nascosto dalla barra fissa. Vale sia in         */
+/* verticale sia in orizzontale, dove lo spazio in altezza è poco.           */
+
+@media (max-width: 700px), (max-height: 600px) and (orientation: landscape) {
+  .shell {
+    padding: 0 12px;
+  }
+
+  .main {
+    gap: 44px;
+    padding-top: 8px;
+  }
+
+  .site-header {
+    padding: 12px 0 10px;
+  }
+
+  .game {
+    gap: 10px;
+    padding-bottom: calc(86px + env(safe-area-inset-bottom));
+  }
+
+  .game-title {
+    font-size: 1.5rem;
+  }
+
+  .game-story:not([data-expanded="true"]) p {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .story-toggle {
+    display: inline-block;
+    padding: 2px 0;
+  }
+
+  .game-bar {
+    padding: 6px 0;
+  }
+
+  .mode-btn {
+    padding: 0 14px;
+    font-size: 0.72rem;
+  }
+
+  .timer-value {
+    font-size: 1.35rem;
+  }
+
+  .touch-hint {
+    font-size: 0.68rem;
+  }
+
+  /* A zoom 1 la planimetria si riduce quanto basta a stare tutta in schermo,
+     e il riquadro le sta attorno; ingrandendola torna a scorrere. */
+  .board {
+    display: flex;
+    justify-content: center;
+  }
+
+  .board[data-zoomed="false"] .board-svg {
+    max-height: max(240px, calc(100dvh - 350px));
+  }
+
+  /* barra azioni ancorata in basso */
+  .game-actions {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 12;
+    flex-wrap: nowrap;
+    gap: 8px;
+    padding: 10px 12px calc(10px + env(safe-area-inset-bottom));
+    border-top: 1px solid var(--line);
+    background: linear-gradient(180deg, rgba(10, 11, 15, 0.86), var(--noir) 45%);
+    backdrop-filter: blur(6px);
+  }
+
+  .game-actions .btn {
+    min-height: 52px;
+  }
+
+  .btn-wide {
+    flex: 1 1 auto;
+    min-width: 0;
+    padding: 0 16px;
+  }
+
+  .btn-hint {
+    flex: 0 0 auto;
+    padding: 0 16px;
+    gap: 6px;
+  }
+
+  .label-long {
+    display: none;
+  }
+
+  .label-short {
+    display: inline;
+  }
+
+  .hint-glyph {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 20px;
+    height: 20px;
+    border: 1px solid currentColor;
+    border-radius: 50%;
+    font-size: 0.72rem;
+  }
+
+  .game-meta {
+    gap: 12px;
+    font-size: 0.7rem;
+  }
+
+  .token-list li {
+    font-size: 0.88rem;
+  }
+
+  /* il risultato diventa un pannello a scomparsa dal basso */
+  .result-overlay {
+    padding: 0;
+    align-items: flex-end;
+  }
+
+  .result-card {
+    width: 100%;
+    max-height: 94dvh;
+    overflow-y: auto;
+    border-radius: 20px 20px 0 0;
+    border-bottom: none;
+    padding: 22px 16px calc(16px + env(safe-area-inset-bottom));
+    gap: 14px;
+  }
+
+  .result-actions {
+    position: sticky;
+    bottom: calc(-1 * env(safe-area-inset-bottom));
+    padding: 10px 0 calc(6px + env(safe-area-inset-bottom));
+    margin-bottom: -6px;
+    background: linear-gradient(180deg, rgba(11, 13, 19, 0.7), #0b0d13 35%);
+  }
+
+  .result-actions .btn {
+    flex: 1 1 100%;
+  }
+
+  .result-links {
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+  }
+
+  .result-stats dd {
+    font-size: 1.3rem;
+  }
+
+  .tutorial-actions .btn {
+    flex: 1 1 100%;
+  }
+}
+
+/* Schermi bassi in verticale: si stringe ancora la parte narrativa. */
+@media (max-width: 700px) and (max-height: 700px) {
+  .game-story:not([data-expanded="true"]) p {
+    -webkit-line-clamp: 1;
+  }
+
+  .main {
+    gap: 32px;
+  }
+
+  /* comandi e planimetria restano tutti sopra la barra fissa */
+  .board[data-zoomed="false"] .board-svg {
+    max-height: max(220px, calc(100dvh - 390px));
+  }
+}
+
+/* Telefono in orizzontale: pochissima altezza, si taglia tutto il superfluo. */
+@media (max-height: 600px) and (orientation: landscape) {
+  /* durante una partita l'intestazione del sito lascia il posto al gioco */
+  body:has(.game) .site-header {
+    display: none;
+  }
+
+  .game-title {
+    font-size: 1.15rem;
+  }
+
+  .game-kicker {
+    font-size: 0.6rem;
+  }
+
+  .game-bar {
+    padding: 4px 0;
+  }
+
+  .mode-btn {
+    min-height: 36px;
+  }
+
+  .board {
+    display: flex;
+    justify-content: center;
+  }
+
+  /* stessa specificità della regola per il verticale, che qui non vale */
+  .board .board-svg,
+  .board[data-zoomed="false"] .board-svg {
+    max-height: max(170px, calc(100dvh - 215px));
+  }
+
+  .game-actions {
+    padding-top: 6px;
+    padding-bottom: calc(6px + env(safe-area-inset-bottom));
+  }
+
+  .game-actions .btn {
+    min-height: 44px;
+  }
+
+  .game-story:not([data-expanded="true"]) p {
+    -webkit-line-clamp: 1;
   }
 }
 

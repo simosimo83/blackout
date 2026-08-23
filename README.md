@@ -87,6 +87,27 @@ lato sinistro della successiva).
 Ogni uso viene registrato negli analytics (`hint_used` con `hint_level`); un caso
 risolto con suggerimenti resta valido e il risultato lo indica.
 
+## Impaginazione su telefono
+
+La pagina di gioco è pensata perché planimetria e comandi stiano in una sola
+schermata anche su un 360x640:
+
+- intestazione compatta, storia ridotta a poche righe con "Leggi tutto";
+- barra Linea/Escludi e tempo appiccicati in alto, annulla/ripristina/reset e
+  zoom subito sotto la planimetria;
+- "Verifica" e "Suggerimento" in una barra fissa in fondo, dentro l'area del
+  pollice e rispettando le safe area di iOS;
+- la planimetria si rimpicciolisce quanto basta a stare tutta sopra la barra e
+  torna a scorrere dentro il suo riquadro quando la si ingrandisce;
+- in orizzontale sotto i 430 px di altezza restano solo titolo e planimetria;
+- il risultato diventa un pannello che sale dal basso, con le azioni sempre
+  visibili.
+
+Sul tocco: il trascinamento sui bordi disegna (mantenendo l'orientamento, così
+seguendo un muro non si accendono i bordi trasversali), mentre il trascinamento
+al centro delle stanze scorre la pagina o sposta la planimetria ingrandita.
+L'area sensibile di un bordo non scende mai sotto i 15 px per lato.
+
 ## Progressi
 
 Nessun account. In `localStorage` (`blackout.progress.v1`) restano ID anonimo,

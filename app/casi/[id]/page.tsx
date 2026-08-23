@@ -3,6 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 
 import GameClient from "@/components/GameClient";
+import StoryBlock from "@/components/StoryBlock";
 import { getCaseMetas, getPlayableCase } from "@/lib/cases.server";
 import { t } from "@/lib/i18n";
 
@@ -28,18 +29,18 @@ export default async function CasePage({ params }: { params: Promise<{ id: strin
   return (
     <div className="game">
       <header className="game-header">
-        <div className="game-heading">
+        <p className="game-kicker">
           <Link className="game-back" href="/casi">
             ← {t.game.back}
           </Link>
-          <p className="game-kicker">
+          <span className="game-kicker-text">
             {t.cases.caseNumber(playable.id)} · {playable.location}
-          </p>
-          <h1 className="game-title">{playable.title}</h1>
-        </div>
+          </span>
+        </p>
+        <h1 className="game-title">{playable.title}</h1>
       </header>
 
-      <p className="game-story">{playable.story}</p>
+      <StoryBlock story={playable.story} />
 
       <GameClient playable={playable} />
 

@@ -1,6 +1,6 @@
 import { expect, test } from "@playwright/test";
 
-import { drawEdges, drawnEdges, seedProgress, solutionOf } from "./helpers";
+import { cellCenter, drawEdges, drawnEdges, edgePoint, seedProgress, solutionOf } from "./helpers";
 
 test("dalla homepage si arriva al primo caso senza registrarsi", async ({ page }) => {
   await page.goto("/");
@@ -50,6 +50,46 @@ test("progressi e timer sopravvivono al refresh", async ({ page }) => {
   await expect(page.locator(".timer-value")).not.toHaveText("00:00");
   expect(await page.locator(".timer-value").textContent()).not.toBe("00:00");
   expect(timeBefore).not.toBe("00:00");
+});
+
+test("un solo trascinamento accende più bordi e si annulla in un colpo", async ({ page }) => {
+  await page.goto("/casi/1");
+  const ids = ["r0c0-top", "r0c1-top", "r0c2-top"];
+  const points = [];
+  for (const id of ids) points.push(await edgePoint(page, id));
+
+  await page.mouse.move(points[0].x, points[0].y);
+  await page.mouse.down();
+  for (const point of points.slice(1)) await page.mouse.move(point.x, point.y, { steps: 10 });
+  await page.mouse.up();
+
+  await expect(page.locator(".board-line")).toHaveCount(3);
+  await page.getByRole("button", { name: "Annulla" }).click();
+  await expect(page.locator(".board-line")).toHaveCount(0);
+});
+
+test("il tocco sulle stanze scorre la pagina invece di disegnare", async ({ page }, testInfo) => {
+  test.skip(testInfo.project.name !== "mobile", "serve un dispositivo touch");
+  await page.goto("/casi/1");
+  await page.waitForTimeout(300);
+  const point = await cellCenter(page, 2, 2);
+  const before = await page.evaluate(() => window.scrollY);
+
+  const cdp = await page.context().newCDPSession(page);
+  await cdp.send("Input.dispatchTouchEvent", {
+    type: "touchStart",
+    touchPoints: [{ x: point.x, y: point.y }],
+  });
+  for (const dy of [30, 70, 120]) {
+    await cdp.send("Input.dispatchTouchEvent", {
+      type: "touchMove",
+      touchPoints: [{ x: point.x, y: point.y - dy }],
+    });
+  }
+  await cdp.send("Input.dispatchTouchEvent", { type: "touchEnd", touchPoints: [] });
+
+  expect(await page.evaluate(() => window.scrollY)).toBeGreaterThan(before);
+  await expect(page.locator(".board-line")).toHaveCount(0);
 });
 
 test("i suggerimenti sono tre e vengono applicati alla planimetria", async ({ page }) => {
