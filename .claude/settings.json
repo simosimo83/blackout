@@ -1,0 +1,14 @@
+{
+  "permissions": {
+    "allow": ["mcp__SBH"],
+    "ask": [
+      "mcp__SBH__aw_conferma_pagamento",
+      "mcp__SBH__registra_incasso",
+      "mcp__SBH__fic_invia_sdi",
+      "mcp__SBH__fic_invia_email",
+      "mcp__SBH__cf_dns_modifica",
+      "mcp__SBH__nc_imposta_nameserver",
+      "mcp__SBH__railway_imposta_variabili"
+    ]
+  }
+}
